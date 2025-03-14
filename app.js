@@ -47,6 +47,16 @@ export default app;
 
 */
 
+
+
+
+
+
+
+
+
+
+/*
 import mongoose from "mongoose";
 import express from "express";
 import cors from "cors";
@@ -82,6 +92,46 @@ app.use("/notificaciones", notificacionRoutes);
 // Iniciar el servidor
 const port = process.env.PORT || 4000;
 app.listen(port, () => console.log(`🚀 Servidor en ejecución en el puerto ${port}`));
+
+// Manejo de rutas no encontradas
+app.use((req, res) => res.status(404).json({ message: `Recurso no encontrado: ${req.url}` }));
+
+export default app;
+*/
+import mongoose from "mongoose";
+import express from "express";
+import cors from "cors";
+import usuarioRoutes from "./Backend/routes/usuarioRoutes.js";
+import recetaRoutes from "./Backend/routes/recetaRoutes.js";
+import comentarioRoutes from "./Backend/routes/comentarioRoutes.js";
+import notificacionRoutes from "./Backend/routes/notificacionRoutes.js";
+
+// Configuración directa (sin .env)
+const MONGO_URI = "mongodb://localhost:27017/RecipiesSNT";
+const PORT = 3000;
+
+// Conexión a MongoDB
+mongoose.connect(MONGO_URI, {
+  useNewUrlParser: true,
+  useUnifiedTopology: true,
+})
+  .then(() => console.log("✅ Conexión a la base de datos exitosa"))
+  .catch((error) => console.error("❌ Error al conectar con la base de datos", error));
+
+const app = express();
+
+// Middleware
+app.use(cors());
+app.use(express.json());
+
+// Rutas
+app.use("/usuarios", usuarioRoutes);
+app.use("/recetas", recetaRoutes);
+app.use("/comentarios", comentarioRoutes);
+app.use("/notificaciones", notificacionRoutes);
+
+// Iniciar el servidor
+app.listen(PORT, () => console.log(`🚀 Servidor en ejecución en el puerto ${PORT}`));
 
 // Manejo de rutas no encontradas
 app.use((req, res) => res.status(404).json({ message: `Recurso no encontrado: ${req.url}` }));
